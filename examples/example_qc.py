@@ -2,7 +2,8 @@ from suitefp.qc import FiberPhotometryData, FiberPhotometryQCEvaluator
 
 
 def run_specific_raw_metrics(fp: str, fiber_channel: str, metric_names: list):
-    """Example function to run specific raw metrics on a color and fiber channel."""
+    """Example function to run specific raw metrics on a
+    color and fiber channel."""
     data = FiberPhotometryData.from_csv(fp, fiber_channel=fiber_channel)
     evaluator = FiberPhotometryQCEvaluator(raw_metrics=metric_names)
     raw_results = evaluator.evaluate_raw_metrics(data)
@@ -12,7 +13,8 @@ def run_specific_raw_metrics(fp: str, fiber_channel: str, metric_names: list):
 def run_raw_processed_metrics(
     fp: str, fiber_channel: str, raw_metrics: list, processed_metrics: list
 ):
-    """Example function to run raw and processed metrics on a color and fiber channel."""
+    """Example function to run raw and processed metrics on a color
+    and fiber channel."""
     data = FiberPhotometryData.from_csv(fp, fiber_channel=fiber_channel)
     evaluator = FiberPhotometryQCEvaluator(
         raw_metrics=raw_metrics, processed_metrics=processed_metrics
@@ -23,7 +25,8 @@ def run_raw_processed_metrics(
 
 
 def run_all_metrics(fp: str, fiber_channel: str):
-    """Example function to run all QC metrics on a given file and fiber channel."""
+    """Example function to run all QC metrics on a given file
+    and fiber channel."""
     data = FiberPhotometryData.from_csv(fp, fiber_channel=fiber_channel)
     evaluator = FiberPhotometryQCEvaluator()
     all_results = evaluator.evaluate_all_metrics(data)
