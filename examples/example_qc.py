@@ -1,54 +1,57 @@
 import pandas as pd
-from photo_qc import FiberPhotometryData, FiberPhotometryQCEvaluator
+from suitefp.qc import FiberPhotometryData, FiberPhotometryQCEvaluator
 
-# Test the new simplified QC system
-fp = "path_to_csv/your.csv"
 
-# Load the data
-green_df = pd.read_csv(fp)
+def run_specific_raw_metrics(fp: str, fiber_channel: str, metric_names: list):
+    """Example function to run specific raw metrics on a color and fiber channel."""
+    data = FiberPhotometryData.from_csv(fp, fiber_channel=fiber_channel)
+    evaluator = FiberPhotometryQCEvaluator(raw_metrics=metric_names)
+    raw_results = evaluator.evaluate_raw_metrics(data)
+    return raw_results
 
-# Test different fiber channels
-for fiber_channel in ['Fiber_0', 'Fiber_1', 'Fiber_2', 'Fiber_3']:
-    print(f"\n=== Testing {fiber_channel} ===")
-    
-    # Create QC data for specific fiber channel
-    qc_data = FiberPhotometryData(
-        fluorescence_df=green_df,
-        fiber_channel=fiber_channel,
-        background_channel='Background',
-        time_channel='ReferenceTime'
+
+def run_raw_processed_metrics(
+    fp: str, fiber_channel: str, raw_metrics: list, processed_metrics: list
+):
+    """Example function to run raw and processed metrics on a color and fiber channel."""
+    data = FiberPhotometryData.from_csv(fp, fiber_channel=fiber_channel)
+    evaluator = FiberPhotometryQCEvaluator(
+        raw_metrics=raw_metrics, processed_metrics=processed_metrics
     )
-    
-    # Or use the convenience method:
-    # qc_data = FiberPhotometryData.from_csv(fp, fiber_channel)
-    
-    print(f"Data length: {qc_data.data_length}")
-    print(f"Background floor average: {qc_data.floor_ave:.2f}")
-    print(f"Fiber channel mean: {qc_data.fiber_data.mean():.2f}")
-    
-    # Create evaluator and run QC
+    raw_results = evaluator.evaluate_raw_metrics(data)
+    processed_results = evaluator.evaluate_processed_metrics(data)
+    return raw_results, processed_results
+
+
+def run_all_metrics(fp: str, fiber_channel: str):
+    """Example function to run all QC metrics on a given file and fiber channel."""
+    data = FiberPhotometryData.from_csv(fp, fiber_channel=fiber_channel)
     evaluator = FiberPhotometryQCEvaluator()
-    
-    # Run raw metrics
-    raw_results = evaluator.evaluate_raw_metrics(qc_data)
-    print(f"Raw metrics: {len(raw_results)} checks")
-    for result in raw_results:
-        status = "PASS" if result.value else "FAIL"
-        print(f"  - {result.name}: {status}")
-    
-    # Run processed metrics
-    processed_results = evaluator.evaluate_processed_metrics(qc_data)
-    print(f"Processed metrics: {len(processed_results)} checks")
-    for result in processed_results:
-        status = "PASS" if result.value else "FAIL"
-        print(f"  - {result.name}: {status}")
+    all_results = evaluator.evaluate_all_metrics(data)
+    return all_results
 
 
+if __name__ == "__main__":
+    green_fp = "green.csv"
+    red_fp = "red.csv"
+    iso_fp = "iso.csv"
 
-###### Examples of other ways to run specific metrics
+    # Run all metrics on each file and one channel
+    green_results = run_all_metrics(green_fp, "Fiber_0")
+    red_results = run_all_metrics(red_fp, "Fiber_0")
+    iso_results = run_all_metrics(iso_fp, "Fiber_0")
 
-evaluator1 = FiberPhotometryQCEvaluator(
-    raw_metrics=["DataDurationMetric"],
-    processed_metrics=[]
-)
-result1 = evaluator1.evaluate_raw_metrics(qc_data)[0]
+    # Run raw and processed metrics on red file, Fiber_2
+    red_raw_results, red_processed_results = run_raw_processed_metrics(
+        red_fp,
+        "Fiber_2",
+        raw_metrics=["NoFiberNaNMetric"],
+        processed_metrics=["ZScoreMetric"],
+    )
+
+    # Run specific raw metrics on green file, Fiber_1
+    specific_green_results = run_specific_raw_metrics(
+        green_fp,
+        "Fiber_1",
+        metric_names=["DataDurationMetric", "NoFiberNaNMetric"],
+    )
