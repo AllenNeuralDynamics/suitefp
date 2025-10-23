@@ -1,3 +1,4 @@
+"""QC use example """
 from suitefp.qc import FiberPhotometryData, FiberPhotometryQCEvaluator
 
 
