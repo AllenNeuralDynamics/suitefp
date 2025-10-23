@@ -51,7 +51,7 @@ class TestFiberPhotometryData(unittest.TestCase):
         self.assertEqual(data.fiber_channel, "Fiber_0")
         self.assertEqual(data.background_channel, "Background")
         self.assertEqual(data.time_channel, "ReferenceTime")
-        self.assertEqual(data.floor_ave, self.test_df["Background"].mean())
+        self.assertEqual(data.floor_avg, self.test_df["Background"].mean())
 
     def test_init_missing_columns(self):
         """Test initialization with missing columns."""
@@ -119,9 +119,9 @@ class TestFiberPhotometryData(unittest.TestCase):
             data.time_data, self.test_df["ReferenceTime"]
         )
 
-        # Test floor_ave property
-        expected_floor_ave = self.test_df["Background"].mean()
-        self.assertEqual(data.floor_ave, expected_floor_ave)
+        # Test floor_avg property
+        expected_floor_avg = self.test_df["Background"].mean()
+        self.assertEqual(data.floor_avg, expected_floor_avg)
 
         # Test data_length property
         self.assertEqual(data.data_length, len(self.test_df))
@@ -615,7 +615,7 @@ class TestConcreteMetrics(unittest.TestCase):
         # Test with default limit
         metric = CMOSFloorDarkFiberMetric()
 
-        # Good data (floor_ave = 50, should be < 265)
+        # Good data (floor_avg = 50, should be < 265)
         result = metric.evaluate(self.good_data)
         self.assertTrue(result.value)
 

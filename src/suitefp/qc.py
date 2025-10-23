@@ -65,7 +65,7 @@ class FiberPhotometryData:
         return self.fluorescence_df[self.time_channel]
 
     @property
-    def floor_ave(self):
+    def floor_avg(self):
         """Get calculated floor average from background."""
         return self._floor_avg
 
@@ -302,7 +302,7 @@ class CMOSFloorDarkFiberMetric(CMOSFloorDarkMetric):
 
     def _evaluate_condition(self, data: FiberPhotometryData) -> bool:
         """Evaluate condition"""
-        return data.floor_ave < self.limit
+        return data.floor_avg < self.limit
 
 
 @MetricRegistry.register
