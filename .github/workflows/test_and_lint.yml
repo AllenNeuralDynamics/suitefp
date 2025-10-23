@@ -23,15 +23,6 @@ jobs:
         python -m pip install black coverage flake8 interrogate isort Sphinx furo --no-cache-dir
     - name: Run linter checks
       run: flake8 . && interrogate --verbose .
-    - name: Debug test discovery
-      run: |
-        echo "Current directory:"
-        pwd
-        echo "Directory contents:"
-        ls -la
-        echo "Tests directory contents:"
-        ls -la tests/
-        echo "Python path:"
-        python -c "import sys; print('\n'.join(sys.path))"
     - name: Run tests and coverage
-      run: coverage run --source=src -m unittest tests.test_qc -v && coverage report --omit="examples/*"
+      run: |
+        coverage run --source=src -m unittest tests.test_qc -v && coverage report --omit="examples/*"
